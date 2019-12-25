@@ -60,7 +60,6 @@ class rsyslog_sink final : public base_sink<Mutex>
     { "local6", LOG_LOCAL6 },
     { "local7", LOG_LOCAL7 },
   };
-  const std::string ident_;
   const int logBufferMaxSize_;
   struct sockaddr_in sockaddr_;
   int logFd_;
@@ -75,8 +74,7 @@ class rsyslog_sink final : public base_sink<Mutex>
                int logBufferMaxSize,
                int port,
                bool enable_formatting)
-      : ident_{std::move(ident)}
-      , enable_formatting_{enable_formatting}
+      : enable_formatting_{enable_formatting}
       , logBufferMaxSize_(logBufferMaxSize)
   {
     if (facilities_.find(facility) == facilities_.end() ||
@@ -86,7 +84,7 @@ class rsyslog_sink final : public base_sink<Mutex>
       return;
     }
 
-    if (logBufferMaxSize > std::numeric_limits<int>::max())
+    if (logBufferMaxSize_ > std::numeric_limits<int>::max())
     {
       SPDLOG_THROW(spdlog_ex("too large maxLogSize"));
       return;
