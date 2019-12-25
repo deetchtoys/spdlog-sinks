@@ -129,7 +129,10 @@ class rsyslog_sink final : public base_sink<Mutex>
     length = length > static_cast<size_t>(std::numeric_limits<int>::max()) ? static_cast<size_t>(std::numeric_limits<int>::max()) : length;
     logBuffer_ += logHeader_;
     length = length > logBufferMaxSize_ - logBuffer_.size() ? logBufferMaxSize_ - logBuffer_.size() : length;
-    logBuffer_.append(payload.data(), length);
+    if (length > 0)
+    {
+      logBuffer_.append(payload.data(), length);
+    }
     size_t sendSize = write(logFd_, logBuffer_.c_str(), logBuffer_.size());
     logBuffer_.clear();
   }
@@ -142,7 +145,7 @@ class rsyslog_sink final : public base_sink<Mutex>
   {
     if ((logFd_ = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
     {
-      SPDLOG_THROW(spdlog_ex("Failed create socket"));
+      SPDLOG_THROW(spdlog_ex("failed create socket"));
       return;
     }
 
@@ -150,13 +153,13 @@ class rsyslog_sink final : public base_sink<Mutex>
     nb = 1;
     if (ioctl(logFd_, FIONBIO, &nb) == -1)
     {
-      SPDLOG_THROW(spdlog_ex("Failed ioctl socket FIONBIO"));
+      SPDLOG_THROW(spdlog_ex("failed ioctl socket FIONBIO"));
       return;
     }
 
     if (connect(logFd_, reinterpret_cast<struct sockaddr *>(&sockaddr_), sizeof(sockaddr_)) < 0)
     {
-      SPDLOG_THROW(spdlog_ex("Failed connect socket"));
+      SPDLOG_THROW(spdlog_ex("failed connect socket"));
       return;
     }
   }
