@@ -72,12 +72,12 @@ class rsyslog_sink final : public base_sink<Mutex>
                std::string rsyslogIp,
                std::string facility,
                std::string severity,
-               int maxLogBufferSize,
+               int logBufferMaxSize,
                int port,
                bool enable_formatting)
       : ident_{std::move(ident)}
       , enable_formatting_{enable_formatting}
-      , logBufferMaxSize_(maxLogBufferSize)
+      , logBufferMaxSize_(logBufferMaxSize)
   {
     if (facilities_.find(facility) == facilities_.end() ||
         severities_.find(severity) == severities_.end())
@@ -86,7 +86,7 @@ class rsyslog_sink final : public base_sink<Mutex>
       return;
     }
 
-    if (maxLogBufferSize > std::numeric_limits<int>::max())
+    if (logBufferMaxSize > std::numeric_limits<int>::max())
     {
       SPDLOG_THROW(spdlog_ex("too large maxLogSize"));
       return;
@@ -175,11 +175,11 @@ inline std::shared_ptr<logger> rsyslog_logger_mt(const std::string &logger_name,
                                                  const std::string &rsyslogIp,
                                                  const std::string &facility,
                                                  const std::string &severity,
-                                                 int maxLogBufferSize = 1024 * 1024 * 16,
+                                                 int logBufferMaxSize = 1024 * 1024 * 16,
                                                  int port = 514,
                                                  bool enable_formatting = true)
 {
-  return Factory::template create<sinks::rsyslog_sink_mt>(logger_name, ident, rsyslogIp, facility, severity, maxLogBufferSize, port, enable_formatting);
+  return Factory::template create<sinks::rsyslog_sink_mt>(logger_name, ident, rsyslogIp, facility, severity, logBufferMaxSize, port, enable_formatting);
 }
 
 template<typename Factory = synchronous_factory>
@@ -188,11 +188,11 @@ inline std::shared_ptr<logger> rsyslog_logger_st(const std::string &logger_name,
                                                  const std::string &rsyslogIp,
                                                  const std::string &facility,
                                                  const std::string &severity,
-                                                 int maxLogBufferSize = 1024 * 1024 * 16,
+                                                 int logBufferMaxSize = 1024 * 1024 * 16,
                                                  int port = 514,
                                                  bool enable_formatting = true)
 {
-  return Factory::template create<sinks::rsyslog_sink_st>(logger_name, ident, rsyslogIp, facility, severity, maxLogBufferSize, port, enable_formatting);
+  return Factory::template create<sinks::rsyslog_sink_st>(logger_name, ident, rsyslogIp, facility, severity, logBufferMaxSize, port, enable_formatting);
 }
 
 } // namespace spdlog
