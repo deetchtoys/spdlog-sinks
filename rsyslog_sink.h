@@ -128,10 +128,7 @@ class rsyslog_sink final : public base_sink<Mutex>
     }
     size_t length = payload.size();
     // limit to max int
-    if (length > static_cast<size_t>(std::numeric_limits<int>::max()))
-    {
-      length = static_cast<size_t>(std::numeric_limits<int>::max());
-    }
+    length = length > static_cast<size_t>(std::numeric_limits<int>::max()) ? static_cast<size_t>(std::numeric_limits<int>::max()) : length;
     logBuffer_ += logHeader_;
     length = length > logBufferMaxSize_ - logBuffer_.size() ? logBufferMaxSize_ - logBuffer_.size() : length;
     logBuffer_.append(payload.data(), length);
