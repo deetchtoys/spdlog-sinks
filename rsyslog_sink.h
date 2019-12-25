@@ -67,14 +67,14 @@ class rsyslog_sink final : public base_sink<Mutex>
   std::string logHeader_;
 
  public:
-  rsyslog_sink(std::string ident,
-               std::string rsyslogIp,
-               std::string facility,
-               std::string severity,
+  rsyslog_sink(const std::string &ident,
+               const std::string &rsyslogIp,
+               const std::string &facility,
+               const std::string &severity,
                int logBufferMaxSize,
                int port,
                bool enable_formatting)
-      : enable_formatting_{enable_formatting}
+      : enable_formatting_(enable_formatting)
       , logBufferMaxSize_(logBufferMaxSize)
   {
     if (facilities_.find(facility) == facilities_.end() ||
