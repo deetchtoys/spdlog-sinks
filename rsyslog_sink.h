@@ -3,16 +3,6 @@
 
 #pragma once
 
-#include "spdlog/sinks/base_sink.h"
-#include "spdlog/details/null_mutex.h"
-#include "spdlog/common.h"
-#include "spdlog/details/synchronous_factory.h"
-
-#include <array>
-#include <string>
-#include <map>
-#include <sstream>
-
 #include <syslog.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -20,10 +10,20 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
+#include <array>
+#include <string>
+#include <map>
+#include <sstream>
+
+#include "spdlog/sinks/base_sink.h"
+#include "spdlog/details/null_mutex.h"
+#include "spdlog/common.h"
+#include "spdlog/details/synchronous_factory.h"
+
 namespace spdlog {
 namespace sinks {
 /**
- * Sink that write to syslog using the `syscall()` library call.
+ * Sink that write to rsyslog using udp.
  */
 template<typename Mutex>
 class rsyslog_sink final : public base_sink<Mutex>
